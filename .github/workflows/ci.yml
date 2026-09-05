@@ -11,16 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:8
+      postgres:
+        image: postgres:16
         env:
-          MYSQL_ROOT_PASSWORD: secret
-          MYSQL_DATABASE: laravel_test
-          MYSQL_USER: laravel
-          MYSQL_PASSWORD: secret
+          POSTGRES_USER: laravel
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: laravel_test
         ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -55,4 +58,4 @@ jobs:
       - name: Run tests
         # run: ./vendor/bin/phpunit --colors=always
         # Or if you use Pest:
-        run: ./vendor/bin/pest --colors=alway
+        run: ./vendor/bin/pest --colors=always
