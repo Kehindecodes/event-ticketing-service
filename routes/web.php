@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Termwind\Components\Hr;
 
 Route::get('/', function () {
-    return view('welcome');
+    return response('Hello, World!', 200);
 });
