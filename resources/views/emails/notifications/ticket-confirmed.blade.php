@@ -1,8 +1,6 @@
 <x-mail::message>
 # You're going! 🎟️
 
-Hi {{ $user->name }},
-
 {{ $notification->message }}
 
 We'll see you there.
