@@ -1,8 +1,14 @@
 <?php
 
+use App\Models\Notification;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\Route;
 use Termwind\Components\Hr;
 
-Route::get('/', function () {
-    return response('Hello, World!', 200);
+Route::post('/notify', function () {
+    NotificationService::send(
+        NotificationType::TICKET_OFFERED,
+        'Hello, World!',
+        ''
+    );
 });

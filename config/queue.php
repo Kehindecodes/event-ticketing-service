@@ -44,14 +44,6 @@ return [
             'after_commit' => false,
         ],
 
-        'beanstalkd' => [
-            'driver' => 'beanstalkd',
-            'host' => env('BEANSTALKD_QUEUE_HOST', 'localhost'),
-            'queue' => env('BEANSTALKD_QUEUE', 'default'),
-            'retry_after' => (int) env('BEANSTALKD_QUEUE_RETRY_AFTER', 90),
-            'block_for' => 0,
-            'after_commit' => false,
-        ],
 
         'sqs' => [
             'driver' => 'sqs',
@@ -80,8 +72,8 @@ return [
                 [
                     'host' => env('RABBITMQ_HOST', '127.0.0.1'),
                     'port' => env('RABBITMQ_PORT', 5672),
-                    'user' => env('RABBITMQ_USER', 'guest'),
-                    'password' => env('RABBITMQ_PASSWORD', 'guest'),
+                    'user' => env('RABBITMQ_USER', 'event-ticketing'),
+                    'password' => env('RABBITMQ_PASSWORD', 'ticketing1_#'),
                     'vhost' => env('RABBITMQ_VHOST', '/'),
                 ],
             ],

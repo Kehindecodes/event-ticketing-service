@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notification', function (Blueprint $table) {
-            Schema::create('notifications', function (Blueprint $table) {
-                $table->uuid('id')->primary();
-                $table->foreignUuid("user_id");
-                $table->text("message");
-                $table->string("notification_type");
-                $table->string(column: "status");
-                $table->timestamps();
-            });
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->text('message');
+            $table->string('notification_type');
+            $table->string('status');
+            $table->timestamps();
         });
     }
 
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notification');
+        Schema::dropIfExists('notifications');
     }
 };
