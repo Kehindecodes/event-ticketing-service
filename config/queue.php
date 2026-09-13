@@ -68,6 +68,8 @@ return [
         'rabbitmq' => [
             'driver' => 'rabbitmq',
 
+            'secure' => env('RABBITMQ_SECURE', true),
+
             'hosts' => [
                 [
                     'host' => env('RABBITMQ_HOST', '127.0.0.1'),
@@ -85,6 +87,9 @@ return [
                     'exchange' => env('RABBITMQ_EXCHANGE', ''),
                     'exchange_type' => env('RABBITMQ_EXCHANGE_TYPE', 'direct'),
                     'exchange_routing_key' => env('RABBITMQ_ROUTING_KEY', ''),
+                ],
+                'ssl_options' => [
+                    'verify_peer' => env('RABBITMQ_SSL_VERIFY_PEER', true),
                 ],
             ],
 

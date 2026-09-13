@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\NotificationContoller;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/notify', [NotificationContoller::class, '__invoke']);
+Route::post('/notify', NotificationController::class);
