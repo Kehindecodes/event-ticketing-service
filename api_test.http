@@ -1,0 +1,9 @@
+POST http://localhost:8000/api/notify
+Content-Type: application/json
+
+{
+  "user_id": "31a9da3a-e9b6-401c-9f6e-ca7cafe493a0",
+  "user_name": "John Doe",
+  "link": "https://testing.com/api",
+  "expires_in_minutes": 30
+}

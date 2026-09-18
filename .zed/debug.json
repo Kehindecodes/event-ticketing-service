@@ -1,0 +1,8 @@
+[
+    {
+        "label": "PHP: Listen to Xdebug",
+        "adapter": "Xdebug",
+        "request": "launch",
+        "port": 9003,
+    },
+]

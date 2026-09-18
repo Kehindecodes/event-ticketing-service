@@ -47,6 +47,7 @@ class SendNotification implements ShouldQueue
             NotificationType::TICKET_EXPIRED => new TicketExpiredMail($this->notification, $user),
             NotificationType::MAGIC_LINK => new MagicLinkMail($this->notification, $user),
             NotificationType::PAYMENT_RESULT => new PaymentResultMail($this->notification, $user),
+
         };
 
         try {
