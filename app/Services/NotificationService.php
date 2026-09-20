@@ -16,7 +16,7 @@ use Ramsey\Uuid\Uuid;
 
 class NotificationService
 {
-    public function send(NotificationData $data, string $userId): void
+    public function send(NotificationData $data, string $userId): Notification
     {
         try {
             $notification = new Notification([
@@ -30,6 +30,8 @@ class NotificationService
             $notification->save();
 
             SendNotification::dispatch($notification)->onQueue('notification');
+
+            return $notification;
         } catch (\Exception $e) {
             throw new \Exception('Failed to send notification: ' . $e->getMessage());
         }
