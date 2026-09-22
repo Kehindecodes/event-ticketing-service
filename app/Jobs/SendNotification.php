@@ -16,6 +16,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Symfony\Component\Mime\Exception\RfcComplianceException;
 
 class SendNotification implements ShouldQueue
 {
@@ -25,6 +26,10 @@ class SendNotification implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(public Notification $notification) {}
+
+    public int $tries = 3;
+
+    public array $backoff = [10, 60, 300];
 
     /**
      * Execute the job.
@@ -68,19 +73,38 @@ class SendNotification implements ShouldQueue
 
         try {
             Mail::to($user->email)->send($emailMessage);
-
             $this->notification->update(["status" => NotificationStatus::SENT]);
+        } catch (RfcComplianceException $e) {
+            Log::error("Notification email address is invalid, not retrying", [
+                "notification_id" => $this->notification->id,
+                "error" => $e->getMessage(),
+            ]);
+            $this->notification->update([
+                "status" => NotificationStatus::FAILED,
+            ]);
+            // fail without retry
+            $this->fail($e);
         } catch (\Throwable $e) {
             Log::error("Failed to send notification email", [
                 "notification_id" => $this->notification->id,
                 "error" => $e->getMessage(),
             ]);
-
-            $this->notification->update([
-                "status" => NotificationStatus::FAILED,
-            ]);
-
             throw $e;
         }
+    }
+
+    /**
+     * Handle a failed job after all retries.
+     */
+    public function failed(\Throwable $e): void
+    {
+        Log::error("Notification failed after retries", [
+            "notification_id" => $this->notification->id,
+            "error" => $e->getMessage(),
+        ]);
+
+        $this->notification->update([
+            "status" => NotificationStatus::FAILED,
+        ]);
     }
 }

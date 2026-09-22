@@ -87,6 +87,16 @@ return [
                     "exchange" => env("RABBITMQ_EXCHANGE", ""),
                     "exchange_type" => env("RABBITMQ_EXCHANGE_TYPE", "direct"),
                     "exchange_routing_key" => env("RABBITMQ_ROUTING_KEY", ""),
+                    "arguments" => [
+                        "x-dead-letter-exchange" => env(
+                            "RABBITMQ_DLX",
+                            "notification.dlx",
+                        ),
+                        "x-dead-letter-routing-key" => env(
+                            "RABBITMQ_DLX_ROUTING_KEY",
+                            "notification.failed",
+                        ),
+                    ],
                 ],
                 // 'ssl_options' => [
                 //     'verify_peer' => env('RABBITMQ_SSL_VERIFY_PEER', true),
