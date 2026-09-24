@@ -12,6 +12,7 @@ use App\Mail\TicketConfirmedMail;
 use App\Mail\TicketExpiredMail;
 use App\Mail\TicketOfferedMail;
 use App\Models\Notification;
+use App\Services\DeadLetterPublisher;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -45,6 +46,7 @@ class SendNotification implements ShouldQueue
             $this->notification->update([
                 "status" => NotificationStatus::FAILED,
             ]);
+            $this->fail();
             return;
         }
 
@@ -106,5 +108,19 @@ class SendNotification implements ShouldQueue
         $this->notification->update([
             "status" => NotificationStatus::FAILED,
         ]);
+
+        try {
+            app(DeadLetterPublisher::class)->publish([
+                "notification_id" => $this->notification->id,
+                "notification_type" => $this->notification->notification_type,
+                "error" => $e->getMessage(),
+                "attempts" => $this->attempts(),
+            ]);
+        } catch (\Throwable $publishError) {
+            Log::error("Failed to publish notification to dead letter queue", [
+                "notification_id" => $this->notification->id,
+                "error" => $publishError->getMessage(),
+            ]);
+        }
     }
 }

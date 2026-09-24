@@ -82,6 +82,8 @@ return [
 
             "queue" => env("RABBITMQ_QUEUE", "default"),
 
+            "dlq" => env("RABBITMQ_DLQ", "notification.dlq"),
+
             "options" => [
                 "queue" => [
                     "exchange" => env("RABBITMQ_EXCHANGE", ""),
