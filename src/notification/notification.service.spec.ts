@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { TicketExpiredData } from './data/ticket-expired.data.js';
 import { Notification } from './entities/notification.entity.js';
 import { NotificationStatus } from './enums/notification-status.enum.js';
 import { NotificationType } from './enums/notification-type.enum.js';
@@ -25,18 +26,19 @@ describe('NotificationService', () => {
     service = module.get(NotificationService);
   });
 
-  it('creates a notification with pending status', async () => {
-    const data = {
+  it('sends a pending notification built from the data object', async () => {
+    const data = new TicketExpiredData('Ada', 'T-1', 'Rock Fest');
+    const entity = {
       userId: 'u1',
-      notificationType: NotificationType.MAGIC_LINK,
-      message: 'Your sign-in link',
+      notificationType: NotificationType.TICKET_EXPIRED,
+      message: data.message(),
+      status: NotificationStatus.PENDING,
     };
-    const entity = { ...data, status: NotificationStatus.PENDING };
     const saved = { id: 'n1', ...entity };
     repository.create.mockReturnValue(entity);
     repository.save.mockResolvedValue(saved);
 
-    await expect(service.create(data)).resolves.toBe(saved);
+    await expect(service.send('u1', data)).resolves.toBe(saved);
     expect(repository.create).toHaveBeenCalledWith(entity);
     expect(repository.save).toHaveBeenCalledWith(entity);
   });
